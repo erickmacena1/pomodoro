@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 
-function Timer({ timeLimit }) {
-    const startTime = Number(timeLimit)*60;
+function Timer({ timeLimit, breakLimit }) {
+    const startTime = Number(timeLimit) * 60;
+    const breakTime = Number(breakLimit) * 60;
     const [time, setTime] = useState(startTime);
     const [isTimeRunning, setIsTimeRunning] = useState(false);
+    const [moment, setMoment] = useState("Work");
 
     useEffect(() => {
         let intervalID;
@@ -16,25 +18,43 @@ function Timer({ timeLimit }) {
         return () => clearInterval(intervalID)
     }, [isTimeRunning]);
 
-    
+
     function stopTime() {
         setIsTimeRunning(false);
         setTime(startTime);
     }
-    
-    if( isTimeRunning && time >= 0) {
-        stopTime()
+
+    if (isTimeRunning && time <= 0) {
+        if (moment === "Work") {
+            setMoment("Rest");
+            setTime(breakTime)
+        }
+        else {
+            setMoment("Work");
+            stopTime();
+        }
     }
+
 
 
     return (
         <div>
-            <h1>{String(parseInt(time / 60)).padStart(2, "0") + 
-            ":" + 
-            String(time % 60).padStart(2, "0")}</h1>
-            <button onClick={() => setIsTimeRunning(!isTimeRunning)}>{isTimeRunning ? "PAUSE" : "START"}</button>
-            <button onClick={stopTime}>STOP</button>
-            <button onClick={()=> setTime(5)}>JUMP TIME TO 5s</button>
+            <h2>{moment}</h2>
+            <h1>{String(parseInt(time / 60)).padStart(2, "0") +
+                ":" +
+                String(time % 60).padStart(2, "0")}</h1>
+
+            <button onClick={() => setIsTimeRunning(!isTimeRunning)}>
+                {isTimeRunning ? "PAUSE" : "START"}
+            </button>
+
+            <button onClick={stopTime}>
+                STOP
+            </button>
+
+            <button onClick={() => setTime(5)}>
+                JUMP TIME TO 5s
+            </button>
         </div>
     );
 }

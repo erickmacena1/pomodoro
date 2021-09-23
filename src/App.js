@@ -4,9 +4,9 @@ import Timer from './components/Timer';
 
 function App() {
   return (
-    <div className="container">
-      <Timer timeLimit="25"></Timer>
-    </div>
+    <main className="container">
+      <Timer timeLimit="25" breakLimit="5"></Timer>
+    </main>
   );
 }
 
