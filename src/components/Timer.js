@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
 
-function Timer({ timeLimit, breakLimit, clickAudio1, clickAudio2, alarm1, alarm2 }) {
-    const startTime = Number(timeLimit) * 60;
-    const breakTime = Number(breakLimit) * 60;
+function Timer({ workTimeMins="25", shortBreakMins="5", longBreakMins="15", maxSeries="4", audios }) {
+    const startTime = Number(workTimeMins) * 60;
+    const shortBreakTime = Number(shortBreakMins) * 60;
+    const longBreakTime = Number(longBreakMins) * 60;
 
     const [time, setTime] = useState(startTime);
     const [isTimeRunning, setIsTimeRunning] = useState(false);
     const [moment, setMoment] = useState("Work");
+
+    let currSerie = 0;
 
     useEffect(() => {
         let intervalID;
@@ -19,25 +22,33 @@ function Timer({ timeLimit, breakLimit, clickAudio1, clickAudio2, alarm1, alarm2
         return () => clearInterval(intervalID);
     }, [isTimeRunning]);
 
-
-    function stopTime() {
-        setIsTimeRunning(false);
-        setTime(startTime);
-    }
-
     if (isTimeRunning && time <= 0) {
+        setIsTimeRunning(false);
+
         if (moment === "Work") {
-            setMoment("Rest");
-            setTime(breakTime);
+            if(currSerie >= maxSeries) {
+                setMoment("Break");
+                setTime(longBreakTime);
+            }
+            else {
+                setMoment("Respite");
+                setTime(shortBreakTime);
+            }
+
+            audios.alarmAudio1.play();
         }
         else {
             setMoment("Work");
-            stopTime();
+            setTime(startTime);
+            audios.alarmAudio2.play();
         }
     }
 
     return (
-        <div className="border border-dark border-5 p-5 d-flex flex-column justify-content-center align-items-center">
+        <div className="position-relative border border-dark border-5 p-5 d-flex flex-column justify-content-center align-items-center">
+            <h6 className="position-absolute top-0 end-0 p-3">
+                1/4
+            </h6>
             <h2 >{moment}</h2>
             <h3 className="display-1">{String(parseInt(time / 60)).padStart(2, "0") +
                 ":" +
@@ -47,29 +58,31 @@ function Timer({ timeLimit, breakLimit, clickAudio1, clickAudio2, alarm1, alarm2
             <div className="d-flex flex-row">
                 <button className="btn btn-warning m-2"
                     onClick={() => {
+                        setIsTimeRunning(!isTimeRunning);
+                        
                         if (isTimeRunning) {
-                            clickAudio2.play();
+                            audios.clickAudio2.play();
                         }
                         else {
-                            clickAudio1.play();
+                            audios.clickAudio1.play();
                         }
-                        setIsTimeRunning(!isTimeRunning)
                     }}>
                     {isTimeRunning ? "PAUSE" : "START"}
                 </button>
 
                 <button className="btn btn-warning m-2"
                     onClick={() => {
-                        stopTime()
-                        clickAudio2.play();
+                        setIsTimeRunning(false);
+                        setTime(startTime);
+                        audios.clickAudio2.play();
                     }}>
                     STOP
                 </button>
             </div>
             <button className="btn btn-warning" onClick={() => {
                 setTime(5);
-                clickAudio1.play();
-                }}>
+                audios.clickAudio1.play();
+            }}>
                 JUMP TIME TO 5s
             </button>
         </div>
