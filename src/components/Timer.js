@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-function Timer({ timeLimit, breakLimit }) {
+function Timer({ timeLimit, breakLimit, clickAudio1, clickAudio2, alarm1, alarm2 }) {
     const startTime = Number(timeLimit) * 60;
     const breakTime = Number(breakLimit) * 60;
 
@@ -44,18 +44,34 @@ function Timer({ timeLimit, breakLimit }) {
                 String(time % 60).padStart(2, "0")}
             </h3>
 
-            <div>
-                <button className="btn btn-warning m-2" onClick={() => setIsTimeRunning(!isTimeRunning)}>
+            <div className="d-flex flex-row">
+                <button className="btn btn-warning m-2"
+                    onClick={() => {
+                        if (isTimeRunning) {
+                            clickAudio2.play();
+                        }
+                        else {
+                            clickAudio1.play();
+                        }
+                        setIsTimeRunning(!isTimeRunning)
+                    }}>
                     {isTimeRunning ? "PAUSE" : "START"}
                 </button>
 
-                <button className="btn btn-warning m-2" onClick={stopTime}>
+                <button className="btn btn-warning m-2"
+                    onClick={() => {
+                        stopTime()
+                        clickAudio2.play();
+                    }}>
                     STOP
                 </button>
             </div>
-                <button className="btn btn-warning" onClick={() => setTime(5)}>
-                    JUMP TIME TO 5s
-                </button>
+            <button className="btn btn-warning" onClick={() => {
+                setTime(5);
+                clickAudio1.play();
+                }}>
+                JUMP TIME TO 5s
+            </button>
         </div>
     );
 }
