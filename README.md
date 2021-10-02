@@ -1,6 +1,8 @@
 ### 🚧🚧 EM CONSTRUÇÃO / BUILDING 🚧🚧
 
-<img style="margin: auto;" alt="Erick's Pomodoro" src="./github_assets/pomodoro.png"/>
+<h1 align="center">
+  <img alt="Erick's Pomodoro" src="./github_assets/pomodoro.png"/>
+</h1>
 
 ### Pomodoro Clock
 
